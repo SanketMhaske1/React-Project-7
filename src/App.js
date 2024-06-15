@@ -8,11 +8,11 @@ export default function App() {
   const { fetchData } = useContext(AppContext);
 
   useEffect(() => {
-    fetchData();
+    fetchData(1);
   }, []);
 
   return (
-    <div>
+    <div className="w-full h-full flex flex-col gap-y-1 justify-center items-center">
       <Heading />
       <Blog />
       <Pagination />

@@ -1,9 +1,9 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import { baseUrl } from "../baseUrl";
 
 export const AppContext = createContext();
 
-function AppContextProvider({ childern }) {
+function AppContextProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
@@ -11,22 +11,24 @@ function AppContextProvider({ childern }) {
 
   async function fetchData(page = 1) {
     setLoading(true);
-    let baseUrl = `${baseUrl}?page=${page}`;
+    let url = `${baseUrl}?page=${page}`;
+
     try {
-      const url = await fetch();
-      const result = await url.json(baseUrl);
-      console.log(result);
-      console.log(result);
-      setPage(result.page);
-      setTotalpage(result.totalpage);
-      setPosts(result.page);
+      url = await fetch(url);
+      const data = await url.json();
+      setPage(data.page);
+      setPosts(data.posts);
+      setTotalpage(data.totalPages);
     } catch (error) {
       console.log(`error in feching data ${error}`);
+      setPage(1);
+      setTotalpage(null);
+      setPosts([]);
     }
     setLoading(false);
   }
 
-  function handlePageChnage(page) {
+  function handlePageChange(page) {
     setPage(page);
     fetchData(page);
   }
@@ -41,7 +43,10 @@ function AppContextProvider({ childern }) {
     totalpage,
     setTotalpage,
     fetchData,
+    handlePageChange,
   };
 
-  return <AppContext.Provider value={value}>{childern}</AppContext.Provider>;
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
+
+export default AppContextProvider;
